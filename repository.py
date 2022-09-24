@@ -1,13 +1,11 @@
 import paho.mqtt.client as mqtt
 
 from hal import handle_warmer, raise_temperature, drop_temperature
-from my_conf import CLIENT_ID, USER, PASSWORD, SERVER, PORT
-
-COMMAND_SENDER_URL = f'v1/{USER}/things/{CLIENT_ID}/response'
+from my_conf import USER, PASSWORD, SERVER, PORT
 
 
-def connect():
-    client = mqtt.Client(CLIENT_ID)
+def connect(client_id):
+    client = mqtt.Client(client_id)
     client.username_pw_set(USER, PASSWORD)
     client.connect(SERVER, PORT)
     return client
@@ -24,12 +22,16 @@ def handle_temperature(temperature: int, humidity: int):
 def handle_message(client, user, msg):
     key, status = msg.payload.decode().split(',')
     handle_warmer('on' if status == '1' else 'off')
-    client.publish(COMMAND_SENDER_URL, key)
+    client.publish(get_command_sender_topic(client._client_id.decode('UTF-8')), key)
 
 
-def get_value_reciever_url(channel: int):
-    return f'v1/{USER}/things/{CLIENT_ID}/cmd/{channel}'
+def get_value_reciever_topic(client_id: str, channel: int):
+    return f'v1/{USER}/things/{client_id}/cmd/{channel}'
 
 
-def get_value_sender_url(channel: int):
-    return f'v1/{USER}/things/{CLIENT_ID}/data/{channel}'
+def get_value_sender_topic(client_id: str, channel: int):
+    return f'v1/{USER}/things/{client_id}/data/{channel}'
+
+
+def get_command_sender_topic(client_id: str):
+    return f'v1/{USER}/things/{client_id}/response'
