@@ -15,7 +15,7 @@ def handle_temperature(client_id):
     temperature = get_temperature(client_id)
     humidity = get_humidity(client_id)
     warmer = get_warmer(client_id)
-    if temperature <= 30 and warmer.state:
+    if temperature < 30 and warmer.is_active():
         raise_temperature(client_id)
     else:
         drop_temperature(client_id)

@@ -22,6 +22,6 @@ while True:
         temperature, humidity = handle_temperature(client_id)
         client.publish(get_value_sender_topic(client_id, 0), temperature)
         client.publish(get_value_sender_topic(client_id, 1), humidity)
-    time.sleep(10)
+    time.sleep(2)
 
 # client.disconnect()
