@@ -1,6 +1,6 @@
 import paho.mqtt.client as mqtt
 
-from hal import handle_warmer, raise_temperature, drop_temperature
+from hal import *
 from my_conf import USER, PASSWORD, SERVER, PORT
 
 
@@ -11,11 +11,14 @@ def connect(client_id):
     return client
 
 
-def handle_temperature(temperature: int, humidity: int):
+def handle_temperature(client_id):
+    temperature = get_temperature(client_id)
+    humidity = get_humidity(client_id)
+
     if temperature <= 30:
-        temperature = raise_temperature(temperature)
+        raise_temperature(client_id)
     else:
-        temperature = drop_temperature(temperature)
+        drop_temperature(client_id)
     return temperature, humidity
 
 
