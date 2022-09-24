@@ -13,6 +13,9 @@ for client_id in CLIENT_IDS:
     client.subscribe(get_value_reciever_topic(client_id, 2))
     client.loop_start()
 
+actual_temperatrure = weather_temperature
+clients[0].publish(get_value_sender_topic(CLIENT_IDS[0], 3), actual_temperatrure)
+
 while True:
     for client in clients:
         client_id = client._client_id.decode('UTF-8')

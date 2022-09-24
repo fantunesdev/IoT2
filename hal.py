@@ -3,6 +3,9 @@ import time
 
 import requests
 
+from my_conf import CLIENT_IDS
+from warmer import Warmer
+
 
 def get_actual_weather():
     try:
@@ -11,6 +14,11 @@ def get_actual_weather():
         return response['main']['temp'], response['main']['humidity']
     except KeyError:
         return random.randrange(0, 40), random.randrange(0, 100)
+
+
+def set_greenhouse_temperature():
+    global weather_temperature, weather_humidity
+    return weather_temperature + random.randrange(-5, 5), weather_humidity + random.randrange(-5, 5)
 
 
 def get_temperature(client_id):
@@ -36,23 +44,34 @@ def raise_temperature(client_id):
 
 
 def drop_temperature(client_id):
-    global greenhouse1_temperature, greenhouse2_temperature
+    global greenhouse1_temperature, greenhouse2_temperature, weather_temperature
     if client_id == '232380f0-3b82-11ed-baf6-35fab7fd0ac8':
-        greenhouse1_temperature -= 1
+        if greenhouse1_temperature > weather_temperature:
+            greenhouse1_temperature -= 1
     else:
-        greenhouse2_temperature -= 1
+        if greenhouse1_temperature > weather_temperature:
+            greenhouse2_temperature -= 1
 
 
-def handle_warmer(state: str):
-    if state == 'on':
-        print('Ligando o aquecedor.')
-        time.sleep(1)
-        print('Aquecedor LIGADO')
-    else:
-        print('Desligando o aquecedor.')
-        time.sleep(1)
-        print('Aquecedor DESLIGADO')
+def get_warmer(warmer_id: str):
+    global warmers
+    for warmer in warmers:
+        if warmer.id == warmer_id:
+            return warmer
 
 
-greenhouse1_temperature, greenhouse1_humidity = get_actual_weather()
-greenhouse2_temperature, greenhouse2_humidity = get_actual_weather()
+def handle_warmer(warmer_id, status: bool):
+    global warmers
+    for warmer in warmers:
+        if warmer.id == warmer_id:
+            warmer.state = status
+
+
+weather_temperature, weather_humidity = get_actual_weather()
+greenhouse1_temperature, greenhouse1_humidity = set_greenhouse_temperature()
+greenhouse2_temperature, greenhouse2_humidity = set_greenhouse_temperature()
+warmers = []
+
+for id in CLIENT_IDS:
+    new_warmer = Warmer(id, True)
+    warmers.append(new_warmer)

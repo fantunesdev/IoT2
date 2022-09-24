@@ -14,8 +14,8 @@ def connect(client_id):
 def handle_temperature(client_id):
     temperature = get_temperature(client_id)
     humidity = get_humidity(client_id)
-
-    if temperature <= 30:
+    warmer = get_warmer(client_id)
+    if temperature <= 30 and warmer.state:
         raise_temperature(client_id)
     else:
         drop_temperature(client_id)
@@ -23,9 +23,10 @@ def handle_temperature(client_id):
 
 
 def handle_message(client, user, msg):
+    client_id = client._client_id.decode('UTF-8')
     key, status = msg.payload.decode().split(',')
-    handle_warmer('on' if status == '1' else 'off')
-    client.publish(get_command_sender_topic(client._client_id.decode('UTF-8')), key)
+    handle_warmer(client_id, True if status == '1' else False)
+    client.publish(get_command_sender_topic(client_id), key)
 
 
 def get_value_reciever_topic(client_id: str, channel: int):
