@@ -29,9 +29,9 @@ class Warmer:
     @state.setter
     def state(self, state):
         self.__state = state
-        self.get_message()
+        self.__get_message()
 
-    def get_message(self):
+    def __get_message(self):
         if self.__state:
             print(f'Ligando o aquecedor do {self}')
             time.sleep(1)

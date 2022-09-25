@@ -24,10 +24,15 @@ class GreenHouse:
     def humidity(self):
         return self.__humidity
 
-    @temperature.setter
-    def temperature(self, temperature):
-        self.__temperature = temperature
+    def raise_temperature(self):
+        self.__temperature += 1
 
-    @humidity.setter
-    def humidity(self, humidity):
-        self.__humidity = humidity
+    def drop_temperature(self):
+        self.__temperature -= 1
+
+    def raise_humidity(self):
+        self.__humidity += 1
+
+    def drop_humidity(self):
+        self.__humidity -= 1
+
