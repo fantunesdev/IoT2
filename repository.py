@@ -20,11 +20,10 @@ def connect(client_id: str):
 
 def handle_temperature(client_id: str):
     """
-    Obtém a temperatura e a umidade das estufas, faz a validação dos dados e aciona ou não o aquecedor para atingir
-    a temperatura ideal.
+    Obtém a temperatura e a umidade das estufas, faz a validação dos dados e eleva ou subtrai a temperatura da estufa.
 
     :param client_id: string que contém o client_id do dispositivo no Cayenne.
-    :return: valor da temperatura e o valor da umidade atual.
+    :return: retorna o valor da temperatura e o valor da umidade atual dentro da estufa.
     """
     greenhouse_temperature = get_greenhouse_temperature(client_id)
     greenhouse_humidity = get_greenhouse_humidity(client_id)
